@@ -16,7 +16,7 @@
 using namespace std;
 pthread_mutex_t mtex;
 
-int main() {
+int main(int argc, char* *argv) {
 	int status = 0;
 	pthread_mutex_init(&mtex, NULL);
 	status = runThreads();
