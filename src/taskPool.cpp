@@ -25,25 +25,34 @@ const int taskPool_getCPUCount()
 // ----------------------------------------------------------------------------
 taskEntry_t::taskEntry_t()
 {
+	pthread_mutex_init(&m_entryLock, NULL);
+	pthread_mutex_lock(&m_entryLock);
 	m_prev = 0;
 	m_next = 0;
 	m_task = 0;
+	pthread_mutex_unlock(&m_entryLock);
 }
 
 taskEntry_t::taskEntry_t(taskData_t& task)
 {
+	pthread_mutex_init(&m_entryLock, NULL);
+	pthread_mutex_lock(&m_entryLock);
 	m_task = &task;
 	m_next = 0;
 	m_prev = 0;
+	pthread_mutex_unlock(&m_entryLock);
 }
 
 taskEntry_t::~taskEntry_t()
 {
+	pthread_mutex_lock(&m_entryLock);
 	m_prev->m_next = m_next;
 	m_next->m_prev = m_prev;
 	m_next = 0;
 	m_prev = 0;
 	delete(m_task);
+	pthread_mutex_unlock(&m_entryLock);
+	pthread_mutex_destroy(&m_entryLock);
 }
 
 taskEntry_t * taskEntry_t::getNext()
@@ -58,12 +67,16 @@ taskEntry_t* taskEntry_t::getPrev()
 
 void taskEntry_t::setNext(taskEntry_t& entry)
 {
+	pthread_mutex_lock(&m_entryLock);
 	m_next = &entry;
+	pthread_mutex_unlock(&m_entryLock);
 }
 
 void taskEntry_t::setPrev(taskEntry_t& entry)
 {
+	pthread_mutex_lock(&m_entryLock);
 	m_prev = &entry;
+	pthread_mutex_unlock(&m_entryLock);
 }
 
 int taskEntry_t::execute(pthread_t& taskThread)
@@ -80,6 +93,7 @@ extern int taskPool_t::count;
 
 taskPool_t::taskPool_t()
 {
+	pthread_mutex_init(&m_taskLock, NULL);
 	m_initialized = false;
 	m_managerThread = 0;
 	m_currentTask = 0;
@@ -90,7 +104,7 @@ taskPool_t::taskPool_t()
 
 taskPool_t::~taskPool_t()
 {
-
+	pthread_mutex_destroy(&m_taskLock);
 }
 
 void taskPool_t::initializePool()

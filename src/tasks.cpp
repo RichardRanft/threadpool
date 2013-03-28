@@ -16,7 +16,7 @@ void* taskFunc(void* param)
 {
 	routineParam_t *pData = (routineParam_t*)param;
 	pthread_mutex_lock(&mtex);
-	std::cout << pData->msg << "\n";
+	std::cout << pthread_self() << ": " << pData->msg << "\n";
 	pthread_mutex_unlock(&mtex);
 	char* returnMsg = (char*)("routineParam_t result");
 	pData->result = (void*) returnMsg;
@@ -28,7 +28,7 @@ void* taskFunc2(void* param)
 {
 	routineParam2_t *pData = (routineParam2_t*)param;
 	pthread_mutex_lock(&mtex);
-	std::cout << pData->msg << " : " << pData->index << "\n";
+	std::cout << pthread_self() << ": " << pData->msg << " : " << pData->index << "\n";
 	pthread_mutex_unlock(&mtex);
 	char* returnMsg = (char*)("routineParam2_t result");
 	pData->result = (void*) returnMsg;

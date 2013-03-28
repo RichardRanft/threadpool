@@ -39,6 +39,7 @@ public:
 	int execute(pthread_t&);
 	void* getResult();
 private:
+	pthread_mutex_t m_entryLock;
 	taskData_t* m_task;
 	taskEntry_t* m_next;
 	taskEntry_t* m_prev;
@@ -67,6 +68,7 @@ private:
 	void* dummyTask(void*);
 	bool m_initialized;
 	static int count;
+	pthread_mutex_t m_taskLock;
 	pthread_t m_managerThread;
 	pthread_t* m_taskPool[24];
 	taskEntry_t* m_currentTask;
