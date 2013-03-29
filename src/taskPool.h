@@ -17,10 +17,18 @@
 
 extern const int CPU_COUNT;
 
+enum threadStatus_t
+{
+	T_NOT_READY = 0,
+	T_RUNNING,
+	T_FINISHED
+};
+
 struct taskHandle_t
 {
 	char m_taskID[37];
 	pthread_t m_threadID;
+	threadStatus_t m_status;
 };
 
 class taskEntry_t
